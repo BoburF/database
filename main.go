@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net"
 
 	"github.com/BoburF/database/protocol"
 )
@@ -11,4 +12,8 @@ func main() {
 	if err := server.Start("localhost", 8080); err != nil {
 		log.Println("Error starting server:", err)
 	}
+
+	server.RegisterCommand("PING", func(conn net.Conn) error {
+		return nil
+	})
 }

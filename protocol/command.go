@@ -1,3 +1,8 @@
 package protocol
 
-type Command struct{}
+import "net"
+
+type Command struct {
+	Name    string
+	Handler func(conn net.Conn) error
+}
