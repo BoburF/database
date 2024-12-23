@@ -1,14 +1,16 @@
 package protocol
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"strings"
 )
 
 type Server struct {
-	commands []Command
+	commands map[string]Command
 }
 
 func (s *Server) create(host string, port int) (net.Listener, error) {
@@ -16,7 +18,45 @@ func (s *Server) create(host string, port int) (net.Listener, error) {
 }
 
 func (s *Server) handleConnection(conn net.Conn) {
+	defer conn.Close()
 
+	for {
+		legnthOfCommand := make([]byte, 2, 2)
+		_, err := conn.Read(legnthOfCommand)
+		if err != nil {
+			log.Panic(err)
+			break
+		}
+
+		legnthOfCommandParsed, err := strconv.Atoi(string(legnthOfCommand))
+		if err != nil || legnthOfCommandParsed <= 0 {
+			log.Panic(err)
+			break
+		}
+
+		command := make([]byte, legnthOfCommandParsed)
+		_, err = conn.Read(command)
+		if err != nil {
+			log.Panic(err)
+			break
+		}
+
+		checkByte := make([]byte, 1)
+		_, err = conn.Read(checkByte)
+		if err != nil {
+			log.Panic(err)
+			break
+		}
+
+		if !bytes.Equal(checkByte, []byte{'\x00'}) {
+			log.Println("Invalid check byte received:", checkByte)
+			return
+		}
+
+		commandParsed := string(command)
+
+		s.commands[commandParsed].Handler(conn)
+	}
 }
 
 func (s *Server) Start(host string, port int) error {
@@ -40,8 +80,8 @@ func (s *Server) Start(host string, port int) error {
 }
 
 func (s *Server) RegisterCommand(name string, handler func(conn net.Conn) error) {
-	s.commands = append(s.commands, Command{
+	s.commands[name] = Command{
 		Name:    strings.ToUpper(name),
 		Handler: handler,
-	})
+	}
 }
