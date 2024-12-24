@@ -55,7 +55,12 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 		commandParsed := string(command)
 
-		s.commands[commandParsed].Handler(conn)
+		handler, exists := s.commands[commandParsed]
+		if !exists {
+			log.Println("Unknown command:", commandParsed)
+			return
+		}
+		handler.Handler(conn)
 	}
 }
 
@@ -65,7 +70,7 @@ func (s *Server) Start(host string, port int) error {
 		return err
 	}
 	defer listener.Close()
-    s.commands = make(map[string]Command)
+	s.commands = make(map[string]Command)
 
 	log.Println("Server started at port:", port)
 
