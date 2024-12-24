@@ -6,3 +6,8 @@ type Command struct {
 	Name    string
 	Handler func(conn net.Conn) error
 }
+
+type ClientCommand struct {
+	Name    string
+	Handler func(args string) error
+}
