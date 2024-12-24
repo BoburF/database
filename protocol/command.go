@@ -9,5 +9,5 @@ type Command struct {
 
 type ClientCommand struct {
 	Name    string
-	Handler func(args string, conn net.Conn) error
+	Handler func(args string, conn net.Conn) (string, error)
 }

@@ -23,18 +23,21 @@ func (c *Client) NewConnect(host string, port int) error {
 	return nil
 }
 
-func (c *Client) Call(command string, args string) error {
+func (c *Client) Call(command string, args string) (string, error) {
 	handler, exists := c.commands[command]
 	if !exists {
-		return errors.New("Command is not defined")
+		return "", errors.New("Command is not defined")
 	}
 
-	handler.Handler(args, c.conn)
+	result, err := handler.Handler(args, c.conn)
+	if err != nil {
+		return "", err
+	}
 
-	return nil
+	return result, nil
 }
 
-func (c *Client) RegisterCommand(name string, handler func(args string, conn net.Conn) error) {
+func (c *Client) RegisterCommand(name string, handler func(args string, conn net.Conn) (string, error)) {
 	c.commands[name] = ClientCommand{
 		Name:    strings.ToUpper(name),
 		Handler: handler,

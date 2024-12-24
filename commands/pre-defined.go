@@ -26,19 +26,20 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 }
 
 func RegisterPredefinedClientCommands(client *protocol.Client) {
-	client.RegisterCommand("PING", func(args string, conn net.Conn) error {
+	client.RegisterCommand("PING", func(args string, conn net.Conn) (string, error) {
 		_, err := conn.Write([]byte(fmt.Sprintf("%02dPING\x00%s", 4, args)))
-		return err
+
+		return "", err
 	})
 
-	client.RegisterCommand("ECHO", func(args string, conn net.Conn) error {
+	client.RegisterCommand("ECHO", func(args string, conn net.Conn) (string, error) {
 		_, err := conn.Write([]byte(fmt.Sprintf("%02dECHO\x00%s", 4, args)))
-		return err
+		return "", err
 	})
 
-	client.RegisterCommand("QUIT", func(args string, conn net.Conn) error {
+	client.RegisterCommand("QUIT", func(args string, conn net.Conn) (string, error) {
 		_, err := conn.Write([]byte(fmt.Sprintf("%02dQUIT\x00%s", 4, args)))
 		conn.Close()
-		return err
+		return "", err
 	})
 }
