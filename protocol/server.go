@@ -21,20 +21,20 @@ func (s *Server) handleConnection(conn net.Conn) {
 	defer conn.Close()
 
 	for {
-		legnthOfCommand := make([]byte, 2, 2)
-		_, err := conn.Read(legnthOfCommand)
+		lengthOfCommand := make([]byte, 2, 2)
+		_, err := conn.Read(lengthOfCommand)
 		if err != nil {
 			log.Panic(err)
 			break
 		}
 
-		legnthOfCommandParsed, err := strconv.Atoi(string(legnthOfCommand))
-		if err != nil || legnthOfCommandParsed <= 0 {
+		lengthOfCommandParsed, err := strconv.Atoi(string(lengthOfCommand))
+		if err != nil || lengthOfCommandParsed <= 0 {
 			log.Panic(err)
 			break
 		}
 
-		command := make([]byte, legnthOfCommandParsed)
+		command := make([]byte, lengthOfCommandParsed)
 		_, err = conn.Read(command)
 		if err != nil {
 			log.Panic(err)
@@ -65,6 +65,7 @@ func (s *Server) Start(host string, port int) error {
 		return err
 	}
 	defer listener.Close()
+    s.commands = make(map[string]Command)
 
 	log.Println("Server started at port:", port)
 
