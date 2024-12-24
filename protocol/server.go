@@ -53,7 +53,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 			return
 		}
 
-		commandParsed := string(command)
+		commandParsed := strings.ToUpper(string(command))
 
 		handler, exists := s.commands[commandParsed]
 		if !exists {
