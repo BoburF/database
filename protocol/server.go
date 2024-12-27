@@ -10,7 +10,7 @@ import (
 )
 
 type Server struct {
-	commands map[string]Command
+	Commands map[string]Command
 }
 
 func (s *Server) create(host string, port int) (net.Listener, error) {
@@ -55,7 +55,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 		commandParsed := strings.ToUpper(string(command))
 
-		handler, exists := s.commands[commandParsed]
+		handler, exists := s.Commands[commandParsed]
 		if !exists {
 			log.Println("Unknown command:", commandParsed)
 			return
@@ -70,7 +70,6 @@ func (s *Server) Start(host string, port int) error {
 		return err
 	}
 	defer listener.Close()
-	s.commands = make(map[string]Command)
 
 	log.Println("Server started at port:", port)
 
@@ -86,7 +85,7 @@ func (s *Server) Start(host string, port int) error {
 }
 
 func (s *Server) RegisterCommand(name string, handler func(conn net.Conn) error) {
-	s.commands[name] = Command{
+	s.Commands[name] = Command{
 		Name:    strings.ToUpper(name),
 		Handler: handler,
 	}

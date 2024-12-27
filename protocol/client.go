@@ -9,7 +9,7 @@ import (
 
 type Client struct {
 	conn     net.Conn
-	commands map[string]ClientCommand
+	Commands map[string]ClientCommand
 }
 
 func (c *Client) NewConnect(host string, port int) error {
@@ -18,13 +18,12 @@ func (c *Client) NewConnect(host string, port int) error {
 		return err
 	}
 	c.conn = conn
-	c.commands = make(map[string]ClientCommand)
 
 	return nil
 }
 
 func (c *Client) Call(command string, args string) (string, error) {
-	handler, exists := c.commands[command]
+	handler, exists := c.Commands[command]
 	if !exists {
 		return "", errors.New("Command is not defined")
 	}
@@ -38,7 +37,7 @@ func (c *Client) Call(command string, args string) (string, error) {
 }
 
 func (c *Client) RegisterCommand(name string, handler func(args string, conn net.Conn) (string, error)) {
-	c.commands[name] = ClientCommand{
+	c.Commands[name] = ClientCommand{
 		Name:    strings.ToUpper(name),
 		Handler: handler,
 	}
