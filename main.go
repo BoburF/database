@@ -24,6 +24,13 @@ func main() {
 	}
 
 	log.Println("Result:", result)
+
+	result, err = client.Call("ECHO", "Bobur zo'r bola")
+	if err != nil {
+		log.Println("Error calling command")
+	}
+
+	log.Println("Result:", result)
 }
 
 func startServer() {
