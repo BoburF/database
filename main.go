@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -9,14 +10,20 @@ import (
 	"github.com/BoburF/database/storageformat"
 )
 
-type Go struct{
-    Name string `bsf:"go_name"`
+type Go struct {
+	Name string `bsf:"go_name"`
 }
 
 type MessageEcho struct {
 	Name string `json:"nam" bsf:"nam"`
 	Mess string `json:"message" bsf:"message"`
-    Go
+	Go
+}
+
+type Data struct {
+	Name    string `bsf:"name"`
+	SurName string `bsf:"surname"`
+	Phone   string `bsf:"phone"`
 }
 
 func main() {
@@ -36,7 +43,7 @@ func main() {
 
 	log.Println("Result:", result)
 
-    mess := MessageEcho{Name: "Bobur;\n00", Mess: "Qonday", Go: Go{Name: "Zooooooo"}}
+	mess := MessageEcho{Name: "Bobur;\n00", Mess: "Qonday", Go: Go{Name: "Zooooooo"}}
 	bytes := storageformat.ToStorageFormat(mess)
 	result, err = client.Call("ECHO", string(bytes))
 	if err != nil {
@@ -48,6 +55,22 @@ func main() {
 	result = storageformat.ToStorageFormat(res)
 
 	log.Println("Result:", result)
+
+	data := Data{
+		Name:    "Bobur",
+		SurName: "Abdullayev",
+		Phone:   "998939752577",
+	}
+	collection := "user"
+
+	query := fmt.Sprintf("%s %s", collection, string(storageformat.ToStorageFormat(data)))
+
+	result, err = client.Call("CREATE", query)
+	if err != nil {
+		log.Println("Error calling command", err)
+	}
+
+    log.Println(result)
 
 	result, err = client.Call("QUIT", "")
 	if err != nil {
