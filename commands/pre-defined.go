@@ -6,58 +6,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
-
-	"github.com/BoburF/database/protocol"
 )
-
-func RegisterPredefinedCommands(server *protocol.Server) {
-	server.RegisterCommand("PING", func(conn net.Conn) error {
-		_, err := CommandRead(conn)
-		if err != nil {
-			return err
-		}
-		err = CommandResultWrite(conn, "PONG")
-		return err
-	})
-
-	server.RegisterCommand("ECHO", func(conn net.Conn) error {
-		result, err := CommandRead(conn)
-		if err != nil {
-			return err
-		}
-		err = CommandResultWrite(conn, result)
-		return err
-	})
-
-	server.RegisterCommand("QUIT", func(conn net.Conn) error {
-		err := CommandResultWrite(conn, "BYE:)")
-		conn.Close()
-		return err
-	})
-}
-
-func RegisterPredefinedClientCommands(client *protocol.Client) {
-	client.RegisterCommand("PING", func(args string, conn net.Conn) (string, error) {
-		err := CommandWrite(conn, "PING", args)
-		if err != nil {
-			return "", err
-		}
-		result, err := CommandResultRead(conn)
-		return result, err
-	})
-
-	client.RegisterCommand("ECHO", func(args string, conn net.Conn) (string, error) {
-		err := CommandWrite(conn, "ECHO", args)
-		result, err := CommandResultRead(conn)
-		return result, err
-
-	})
-
-	client.RegisterCommand("QUIT", func(args string, conn net.Conn) (string, error) {
-		err := CommandWrite(conn, "QUIT", args)
-		return "", err
-	})
-}
 
 func CommandWrite(conn net.Conn, command string, args string) error {
 	_, err := conn.Write([]byte(fmt.Sprintf("%02d%s\x00%d\x00%s", len(command), command, len(args), args)))
