@@ -6,7 +6,18 @@ import (
 
 	"github.com/BoburF/database/commands"
 	"github.com/BoburF/database/protocol"
+	storageformat "github.com/BoburF/database/storage-format"
 )
+
+type Go struct{
+    Name string `bsf:"go_name"`
+}
+
+type MessageEcho struct {
+	Name string `json:"nam" bsf:"nam"`
+	Mess string `json:"message" bsf:"message"`
+    Go
+}
 
 func main() {
 	go startServer()
@@ -25,10 +36,16 @@ func main() {
 
 	log.Println("Result:", result)
 
-	result, err = client.Call("ECHO", "Bobur zo'r bola")
+    mess := MessageEcho{Name: "Bobur;\n00", Mess: "Qonday", Go: Go{Name: "Zooooooo"}}
+	bytes := storageformat.ToStorageFormat(mess)
+	result, err = client.Call("ECHO", string(bytes))
 	if err != nil {
 		log.Println("Error calling command")
 	}
+
+	res := MessageEcho{}
+	storageformat.ToStruct(result, &res)
+	result = storageformat.ToStorageFormat(res)
 
 	log.Println("Result:", result)
 
