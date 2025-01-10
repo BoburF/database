@@ -52,6 +52,13 @@ func main() {
 
 	log.Println("Result:", result)
 
+	result, err = client.Call("GET", collection+" id "+result)
+	if err != nil {
+		log.Println("Error calling command", err)
+	}
+
+	log.Println("Result:", result)
+
 	result, err = client.Call("QUIT", "")
 	if err != nil {
 		log.Println("Error calling command")

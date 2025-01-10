@@ -42,7 +42,7 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 
 		data := strings.Split(result, " ")
 
-		fileId := GenerateTimestampID()+".bsf"
+		fileId := GenerateTimestampID() + ".bsf"
 		path := GeneratePath(data[0], fileId)
 
 		err = storage.Create(path, data[1])
@@ -57,14 +57,44 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 		}
 		defer file.Close()
 
-		_, err = file.WriteString(fileId+"\n")
+		_, err = file.WriteString(fileId + "\n")
 		if err != nil {
 			return err
 		}
 
-		err = CommandResultWrite(conn, fileId+data[1])
+        err = CommandResultWrite(conn, fileId[:len(fileId)-4])
 		if err != nil {
 			return err
+		}
+
+		return nil
+	})
+
+	server.RegisterCommand("GET", func(conn net.Conn) error {
+		result, err := CommandRead(conn)
+		if err != nil {
+			return err
+		}
+
+		data := strings.Split(result, " ")
+
+		if data[1] == "id" {
+			path := GeneratePath(data[0], data[2]+".bsf")
+
+			result, err = storage.Read(path)
+			if err != nil {
+				return err
+			}
+
+			err = CommandResultWrite(conn, result)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = CommandResultWrite(conn, "Other indexes are not supported")
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil

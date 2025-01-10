@@ -33,4 +33,10 @@ func RegisterPredefinedClientCommands(client *protocol.Client) {
 		result, err := CommandResultRead(conn)
 		return result, err
 	})
+
+    client.RegisterCommand("GET", func(args string, conn net.Conn) (string, error) {
+		err := CommandWrite(conn, "GET", args)
+		result, err := CommandResultRead(conn)
+		return result, err
+	})
 }
