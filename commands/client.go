@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/BoburF/database/protocol"
@@ -32,7 +31,6 @@ func RegisterPredefinedClientCommands(client *protocol.Client) {
 	client.RegisterCommand("CREATE", func(args string, conn net.Conn) (string, error) {
 		err := CommandWrite(conn, "CREATE", args)
 		result, err := CommandResultRead(conn)
-        fmt.Println("Error reading none")
 		return result, err
 	})
 }

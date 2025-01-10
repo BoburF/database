@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"log"
 	"net"
 	"strings"
 
@@ -48,8 +47,6 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 		if err != nil {
 			return err
 		}
-
-		log.Println("Created ...")
 
 		err = CommandResultWrite(conn, "SUCCESS")
 		if err != nil {

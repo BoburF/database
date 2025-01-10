@@ -36,26 +36,6 @@ func main() {
 	}
 	commands.RegisterPredefinedClientCommands(&client)
 
-	result, err := client.Call("PING", "")
-	if err != nil {
-		log.Println("Error calling command")
-	}
-
-	log.Println("Result:", result)
-
-	mess := MessageEcho{Name: "Bobur;\n00", Mess: "Qonday", Go: Go{Name: "Zooooooo"}}
-	bytes := storageformat.ToStorageFormat(mess)
-	result, err = client.Call("ECHO", string(bytes))
-	if err != nil {
-		log.Println("Error calling command")
-	}
-
-	res := MessageEcho{}
-	storageformat.ToStruct(result, &res)
-	result = storageformat.ToStorageFormat(res)
-
-	log.Println("Result:", result)
-
 	data := Data{
 		Name:    "Bobur",
 		SurName: "Abdullayev",
@@ -65,12 +45,12 @@ func main() {
 
 	query := fmt.Sprintf("%s %s", collection, string(storageformat.ToStorageFormat(data)))
 
-	result, err = client.Call("CREATE", query)
+	result, err := client.Call("CREATE", query)
 	if err != nil {
 		log.Println("Error calling command", err)
 	}
 
-    log.Println(result)
+	log.Println(result)
 
 	result, err = client.Call("QUIT", "")
 	if err != nil {
