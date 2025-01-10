@@ -2,6 +2,7 @@ package commands
 
 import (
 	"net"
+	"os"
 	"strings"
 
 	"github.com/BoburF/database/protocol"
@@ -45,6 +46,18 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 		path := GeneratePath(data[0], id)
 
 		err = storage.Create(path, data[1])
+		if err != nil {
+			return err
+		}
+
+		pathMeta := GeneratePath(data[0], "meta")
+		file, err := os.OpenFile(pathMeta, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		_, err = file.WriteString(id+"\n")
 		if err != nil {
 			return err
 		}
