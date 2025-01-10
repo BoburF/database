@@ -41,7 +41,7 @@ func main() {
 		SurName: "Abdullayev",
 		Phone:   "998939752577",
 	}
-	collection := "user"
+	collection := "maker"
 
 	query := fmt.Sprintf("%s %s", collection, string(storageformat.ToStorageFormat(data)))
 
@@ -50,7 +50,7 @@ func main() {
 		log.Println("Error calling command", err)
 	}
 
-	log.Println(result)
+	log.Println("Result:", result)
 
 	result, err = client.Call("QUIT", "")
 	if err != nil {

@@ -42,8 +42,8 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 
 		data := strings.Split(result, " ")
 
-		id := GenerateTimestampID()
-		path := GeneratePath(data[0], id)
+		fileId := GenerateTimestampID()+".bsf"
+		path := GeneratePath(data[0], fileId)
 
 		err = storage.Create(path, data[1])
 		if err != nil {
@@ -57,12 +57,12 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 		}
 		defer file.Close()
 
-		_, err = file.WriteString(id+"\n")
+		_, err = file.WriteString(fileId+"\n")
 		if err != nil {
 			return err
 		}
 
-		err = CommandResultWrite(conn, id+data[1])
+		err = CommandResultWrite(conn, fileId+data[1])
 		if err != nil {
 			return err
 		}
