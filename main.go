@@ -6,7 +6,7 @@ import (
 
 	"github.com/BoburF/database/commands"
 	"github.com/BoburF/database/protocol"
-	storageformat "github.com/BoburF/database/storage-format"
+	"github.com/BoburF/database/storageformat"
 )
 
 type Go struct{
