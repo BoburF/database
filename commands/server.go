@@ -41,14 +41,15 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 
 		data := strings.Split(result, " ")
 
-		path := GeneratePath(data[0], GenerateTimestampID())
+		id := GenerateTimestampID()
+		path := GeneratePath(data[0], id)
 
 		err = storage.Create(path, data[1])
 		if err != nil {
 			return err
 		}
 
-		err = CommandResultWrite(conn, "SUCCESS")
+		err = CommandResultWrite(conn, id+data[1])
 		if err != nil {
 			return err
 		}
