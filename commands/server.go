@@ -62,7 +62,7 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 			return err
 		}
 
-        err = CommandResultWrite(conn, fileId[:len(fileId)-4])
+		err = CommandResultWrite(conn, fileId[:len(fileId)-4])
 		if err != nil {
 			return err
 		}
@@ -95,6 +95,29 @@ func RegisterPredefinedCommands(server *protocol.Server) {
 			if err != nil {
 				return err
 			}
+		}
+
+		return nil
+	})
+
+	server.RegisterCommand("GETALL", func(conn net.Conn) error {
+		result, err := CommandRead(conn)
+		if err != nil {
+			return err
+		}
+
+		data := strings.Split(result, " ")
+
+		path := GeneratePath(data[0], "meta")
+
+		result, err = storage.Read(path)
+		if err != nil {
+			return err
+		}
+
+		err = CommandResultWrite(conn, result)
+		if err != nil {
+			return err
 		}
 
 		return nil

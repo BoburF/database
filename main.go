@@ -59,6 +59,13 @@ func main() {
 
 	log.Println("Result:", result)
 
+	result, err = client.Call("GETALL", collection)
+	if err != nil {
+		log.Println("Error calling command", err)
+	}
+
+	log.Println("Result:", result)
+
 	result, err = client.Call("QUIT", "")
 	if err != nil {
 		log.Println("Error calling command")
